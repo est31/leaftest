@@ -1,0 +1,7 @@
+#map {
+	width: 98%;
+	height: 98%;
+	margin: 1% 1% 1% 1%;
+	image-rendering: -moz-crisp-edges; /* firefox */
+	image-rendering: pixelated; /* hopefully everyone eventually */
+} 
