@@ -6,9 +6,9 @@ The map is generated in chunks through many invocations of `minetestmapper` inst
 ##Dependencies
 You will need:
 
--bash
--a web server of some sort
--minetestmapper
+    -bash
+    -a web server of some sort
+    -minetestmapper
 
 Get a clone:
 ```
