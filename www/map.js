@@ -14,12 +14,12 @@ function loadmap(config) {
 	var spawn = config.spawn;
 	var zoommin = config.zoommin;
 	var xb= 0-spawn.x+mapsize/2;
-	var yb= 0-spawn.y-mapsize/2;
+	var yb= 0-spawn.y-mapsize/2-256;
 	var bnd = new L.LatLngBounds();
 	bnd.extend(L.latLng([spawn.x-mapsize/2, spawn.y-mapsize/2]));
 	bnd.extend(L.latLng([spawn.x+mapsize/2, spawn.y+mapsize/2]));
 	var map = L.map('map', {
-		maxZoom:24,
+		maxZoom:26,
 		minZoom:zoommin,
 		maxNativeZoom:20,
 		fullscreenControl: true,
@@ -42,11 +42,14 @@ function loadmap(config) {
 	}).setView([0,0], 22);
 	map.setView([spawn.x,spawn.y]);
 	L.tileLayer('tiles/{z}/map_{x}_{y}.png', {
-		maxZoom: 24,
+		maxZoom: 26,
 		maxNativeZoom: 20,
 		tileSize: 256,
 		continuousWorld: true
 	}).addTo(map);
+	map.on('mousemove click', function(e) {
+		window.mousemove.innerHTML = e.latlng.lat.toFixed(1) + ', ' + e.latlng.lng.toFixed(1);
+	});
 	var hash = L.hash(map);
 }
  
