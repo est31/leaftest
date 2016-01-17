@@ -27,6 +27,26 @@ esac
 
 # echo "Number of jobs: $JOBNUM"
 
+prefix_func="\
+prefix() { \
+	while read line ; do \
+		echo \"\${1}\${line}\"; \
+	done \
+}"
+
+# retains || usage when doing | prefix "sth"
+# use it when needed
+prefix_pipefail="\
+set -o pipefail ; \
+$prefix_func"
+
+# prefix should be usable within this script as well
+eval $prefix_func
+
+#sh -c "$prefix_func ; echo -e 'a\nb\nc\n' | prefix 'PREF '"
+#bash -c "$prefix_pipefail ; (echo -e 'a\nb\nc\n' ; false) | prefix 'PREF '" || echo "ERR"
+#exit 1
+
 scriptdir=`readlink -f $0`
 scriptdir=`dirname $scriptdir`
 
@@ -54,10 +74,11 @@ do
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
 		# Execute sh -c "something"
 		echo "-c"
-		echo "$mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
-		|| (>&2 echo 'minetesmapper ended with non zero exit code'; exit 255)"
+		echo "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
+		| prefix '[TILEGEN $x,$y]: ' \
+		|| (>&2 echo 'minetesmapper for tile [${x},${y}] ended with non zero exit code'; exit 255)"
 	done
-done | xargs -n2 $jobparam -d '\n' sh
+done | xargs -n2 $jobparam -d '\n' bash # bash required because of "set -o pipefail" usage
 
 xargs_exit=$?
 if [ $xargs_exit -ne 0 ]; then
