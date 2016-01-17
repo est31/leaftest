@@ -75,7 +75,7 @@ do
 		# Execute sh -c "something"
 		echo "-c"
 		echo "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
-		| prefix '[TILEGEN $x,$y]: ' \
+		2> >(>&2 prefix '[TILEGEN $x,$y ERR]: ') | prefix '[TILEGEN $x,$y]: ' \
 		|| (>&2 echo 'minetesmapper for tile [${x},${y}] ended with non zero exit code'; exit 255)"
 	done
 done | xargs -n2 $jobparam -d '\n' bash # bash required because of "set -o pipefail" usage
