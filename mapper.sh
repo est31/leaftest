@@ -16,6 +16,17 @@ if [ ! -f $mapperpath ]; then
 	exit 1
 fi
 
+if [ -z "$JOBNUM" ]; then
+	JOBNUM=1
+fi
+
+case "$JOBNUM" in
+	''|*[!0-9]*) echo "Bad number of jobs '$JOBNUM'. Please specify a positive integer." ; exit 1 ;;
+	*) ;;
+esac
+
+# echo "Number of jobs: $JOBNUM"
+
 scriptdir=`readlink -f $0`
 scriptdir=`dirname $scriptdir`
 
@@ -32,6 +43,8 @@ tilenum=$(($DIMENSIONS/$tilesize))
 mkdir -p ${tiledir}/20
 rm -f ${tiledir}/20/*
 
+jobparam="-P$JOBNUM"
+
 #create tile images
 for x in $(seq 0 $tilenum)
 do
@@ -39,13 +52,20 @@ do
 	do
 		posx=$(($spawnx+$tilesize*($x-$tilenum/2)))
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
-		$mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png
-		if [ $? -ne 0 ]; then
-			echo "minetestmapper exited with non zero exit code, aborting."
-			exit 1
-		fi
+		# Execute sh -c "something"
+		echo "-c"
+		echo "$mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
+		|| (>&2 echo 'minetesmapper ended with non zero exit code'; exit 255)"
 	done
-done
+done | xargs -n2 $jobparam -d '\n' sh
+
+xargs_exit=$?
+if [ $xargs_exit -ne 0 ]; then
+	# xargs unfortunately exits immediately, without even waiting for sub-processes
+	sleep 1
+	>&2 echo "Error: xargs ended with non-zero exit code $xargs_exit."
+	exit 1
+fi
 
 #join the images and make them smaller
 mult=1
