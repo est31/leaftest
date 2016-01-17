@@ -75,7 +75,7 @@ do
 		# Execute sh -c "something"
 		echo "-c"
 		echo "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
-		2> >(>&2 prefix '[TILEGEN $x,$y ERR]: ') | prefix '[TILEGEN $x,$y]: ' \
+		2> >(>&2 prefix '[TILEGEN 20/map_${x}_${y}.png ERR]: ') | prefix '[TILEGEN 20/map_${x}_${y}.png]: ' \
 		|| (>&2 echo 'minetesmapper for tile [${x},${y}] ended with non zero exit code'; exit 255)"
 	done
 done | xargs -n2 $jobparam -d '\n' bash # bash required because of "set -o pipefail" usage
@@ -96,6 +96,7 @@ do
 	tnum=$(($tilenum/$mult-1))
 	zoomlevel=$((20-$s))
 	zoomlevelbefore=$((20-$s+1))
+	zlv=$zoomlevel # shorter name
 	dir=$tiledir/$zoomlevel
 	dirb=$tiledir/$zoomlevelbefore
 	mkdir -p $dir
@@ -104,14 +105,16 @@ do
 	do
 		for y in $(seq 0 $tnum)
 		do
-			montage $dirb/map_$(($x*2))_$((y*2)).png $dirb/map_$(($x*2+1))_$((y*2)).png $dirb/map_$(($x*2))_$((y*2+1)).png $dirb/map_$(($x*2+1))_$((y*2+1)).png -geometry +0+0 $dir/map_${x}_${y}.png
-			if [ $? -ne 0 ]; then
+			montage $dirb/map_$(($x*2))_$((y*2)).png $dirb/map_$(($x*2+1))_$((y*2)).png $dirb/map_$(($x*2))_$((y*2+1)).png $dirb/map_$(($x*2+1))_$((y*2+1)).png -geometry +0+0 $dir/map_${x}_${y}.png \
+			2> >(>&2 prefix "[MONTAGE $zlv/map_${x}_${y}.png ERR]: ") | prefix "[MONTAGE $zlv/map_${x}_${y}.png]: "
+			if [ ${PIPESTATUS[0]} -ne 0 ]; then
 				echo "montage exited with non zero exit code, aborting."
 				exit 1
 			fi
-			convert $dir/map_${x}_${y}.png -resize 50% $dir/map_${x}_${y}.png
-			if [ $? -ne 0 ]; then
-				echo "convert exited with non zero exit code, aborting."
+			convert $dir/map_${x}_${y}.png -resize 50% $dir/map_${x}_${y}.png \
+			2> >(>&2 prefix "[SHRINK $zlv/map_${x}_${y}.png ERR]: ") | prefix "[SHRINK $zlv/map_${x}_${y}.png]: "
+			if [ ${PIPESTATUS[0]} -ne 0 ]; then
+				echo "shrinking exited with non zero exit code, aborting."
 				exit 1
 			fi
 		done
