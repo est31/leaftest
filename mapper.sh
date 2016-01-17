@@ -64,7 +64,15 @@ do
 		for y in $(seq 0 $tnum)
 		do
 			montage $dirb/map_$(($x*2))_$((y*2)).png $dirb/map_$(($x*2+1))_$((y*2)).png $dirb/map_$(($x*2))_$((y*2+1)).png $dirb/map_$(($x*2+1))_$((y*2+1)).png -geometry +0+0 $dir/map_${x}_${y}.png
+			if [ $? -ne 0 ]; then
+				echo "montage exited with non zero exit code, aborting."
+				exit 1
+			fi
 			convert $dir/map_${x}_${y}.png -resize 50% $dir/map_${x}_${y}.png
+			if [ $? -ne 0 ]; then
+				echo "convert exited with non zero exit code, aborting."
+				exit 1
+			fi
 		done
 	done
 done
