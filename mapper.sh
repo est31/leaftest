@@ -40,6 +40,10 @@ do
 		posx=$(($spawnx+$tilesize*($x-$tilenum/2)))
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
 		$mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png
+		if [ $? -ne 0 ]; then
+			echo "minetestmapper exited with non zero exit code, aborting."
+			exit 1
+		fi
 	done
 done
 
