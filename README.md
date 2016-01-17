@@ -27,6 +27,9 @@ The `dimension` number specifies the width and height of the map that should be 
 
 After mapping has finished, you can open the `www/map.html` file. If you want to publish your results, you can either symlink the `www` directory into your `/var/www` directory, or copy it. Due to usage of relative symlinks, you should use `rsync -L`, so that the copied directory doesn't contain symlinks.
 
+You can use the `JOBNUM` environment variable to control the number of parallel jobs used for creating the tiles.
+
 ##License
 Copyright (c) 2015 est31, License: MIT.
+
 Parts base on unilicensed script from [LibertyLand](http://www.ayntest.net/pages/liberty-land-map.html) minetest server, [github here](https://github.com/ayntest/ayntest.github.io).
