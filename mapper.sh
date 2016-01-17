@@ -4,8 +4,17 @@ MAPDIR=$1
 SPAWNPOS=$2
 DIMENSIONS=$3
 
+echo "map dir set to "$MAPDIR
+
 if [ -z $MAPPERDIR ]; then
 	MAPPERDIR=.
+fi
+
+MAPPERDIR=$MAPPERDIR/minetestmapper
+
+if [ ! -e  $MAPPERDIR ]; then
+	echo "error, "$MAPPERDIR" doesn't exist."
+	exit
 fi
 
 scriptdir=`readlink -f $0`
@@ -31,8 +40,17 @@ do
 	do
 		posx=$(($spawnx+$tilesize*($x-$tilenum/2)))
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
-		$MAPPERDIR/minetestmapper ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png
-	done
+		$MAPPERDIR ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx}:${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png &
+	done &
+done
+
+delay=0
+while [ $(ps -C minetestmapper | wc -l) != 1 ]
+do
+	#minetestmappers are unfinished
+	sleep 1
+	delay=$(($delay+1))
+	echo $delay" seconds slept waiting for minetestmapper"
 done
 
 #join the images and make them smaller
