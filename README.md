@@ -1,6 +1,6 @@
 #Leaftest
 
-Leaftest consists of a bash script that uses [minetestmapper](https://github.com/Rogier-5/minetest-mapper-cpp) to display the map on a leaflet based zoomable sloppy map.
+Leaftest consists of a bash script that uses [minetestmapper](https://github.com/Rogier-5/minetest-mapper-cpp) to display the map on a leaflet based zoomable sloppy map. As an example, see [VanessaE survival server's map](https://daconcepts.com/vanessa/hobbies/minetest/worldmaps/Survival_World/map.html).
 
 The map is generated in chunks through many invocations of `minetestmapper` instead of one invocation and large file thats cropped later, so that memory requirements for all tools are unrelated to the map size.
 ##Dependencies
