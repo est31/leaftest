@@ -8,6 +8,14 @@ if [ -z $MAPPERDIR ]; then
 	MAPPERDIR=.
 fi
 
+mapperpath=$MAPPERDIR/minetestmapper
+
+if [ ! -f $mapperpath ]; then
+	echo "Error, "$mapperpath" doesn't exist."
+	echo "Please specify the path to the minetestmapper executable via the MAPPERDIR variable"
+	exit 1
+fi
+
 scriptdir=`readlink -f $0`
 scriptdir=`dirname $scriptdir`
 
@@ -31,7 +39,7 @@ do
 	do
 		posx=$(($spawnx+$tilesize*($x-$tilenum/2)))
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
-		$MAPPERDIR/minetestmapper ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png
+		$mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png
 	done
 done
 
