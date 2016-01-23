@@ -73,12 +73,12 @@ do
 		posx=$(($spawnx+$tilesize*($x-$tilenum/2)))
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
 		# Execute sh -c "something"
-		echo "-c"
-		echo "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
+		printf "%s\x00" "-c"
+		printf "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
 		2> >(>&2 prefix '[TILEGEN 20/map_${x}_${y}.png ERR]: ') | prefix '[TILEGEN 20/map_${x}_${y}.png]: ' \
-		|| (>&2 echo 'minetesmapper for tile [${x},${y}] ended with non zero exit code'; exit 255)"
+		|| (>&2 echo 'minetesmapper for tile [${x},${y}] ended with non zero exit code'; exit 255)\x00"
 	done
-done | xargs -n2 $jobparam -d '\n' bash # bash required because of "set -o pipefail" usage
+done | xargs -n2 $jobparam -0 bash # bash required because of "set -o pipefail" usage
 
 xargs_exit=$?
 if [ $xargs_exit -ne 0 ]; then
