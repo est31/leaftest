@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 MAPDIR=$1
 SPAWNPOS=$2
