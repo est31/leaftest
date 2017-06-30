@@ -74,7 +74,7 @@ do
 		posy=$(($spawny+$tilesize*($tilenum/2-$y)))
 		# Execute sh -c "something"
 		printf "%s\x00" "-c"
-		printf "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx},${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
+		printf "$prefix_pipefail ; $mapperpath ${MAPPERPARAMS} -i ${MAPDIR} --geometry ${posx}:${posy}+${tilesize}+${tilesize} -o ${tiledir}/20/map_${x}_${y}.png \
 		2> >(>&2 prefix '[TILEGEN 20/map_${x}_${y}.png ERR]: ') | prefix '[TILEGEN 20/map_${x}_${y}.png]: ' \
 		|| (>&2 echo 'minetesmapper for tile [${x},${y}] ended with non zero exit code'; exit 255)\x00"
 	done
