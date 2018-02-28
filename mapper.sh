@@ -16,6 +16,19 @@ if [ ! -f $mapperpath ]; then
 	exit 1
 fi
 
+if [ -f downscaling/perc ]; then
+	echo "Using SSIM based downscaling"
+	downscale() {
+		downscaling/perc 2 < $1 > ${1}_small
+		mv -f ${1}_small $1
+	}
+else
+	echo "Using downscaling provided by imagemagick"
+	downscale() {
+		convert $1 -resize 50% $1
+	}
+fi
+
 if [ -z "$JOBNUM" ]; then
 	JOBNUM=1
 fi
@@ -111,7 +124,7 @@ do
 				echo "montage exited with non zero exit code, aborting."
 				exit 1
 			fi
-			convert $dir/map_${x}_${y}.png -resize 50% $dir/map_${x}_${y}.png \
+			downscale $dir/map_${x}_${y}.png \
 			2> >(>&2 prefix "[SHRINK $zlv/map_${x}_${y}.png ERR]: ") | prefix "[SHRINK $zlv/map_${x}_${y}.png]: "
 			if [ ${PIPESTATUS[0]} -ne 0 ]; then
 				echo "shrinking exited with non zero exit code, aborting."
