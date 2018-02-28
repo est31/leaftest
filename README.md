@@ -27,6 +27,11 @@ Get a clone:
 git clone --recursive https://github.com/est31/leaftest.git
 ```
 
+Compile the downscaler:
+```
+(cd downscaling && sh compile.sh)
+```
+
 To start the mapping, do:
 ```
 MAPPERDIR=dir/containing/minetestmapper ./mapper.sh path/to/world spawnx,spawny dimension
