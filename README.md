@@ -15,6 +15,9 @@ Ensure that you have:
     -imagemagick
     -minetestmapper
 
+Note that you need a minetestmapper which supports precise node coordinates,
+the official minetestmapper doesn't support it (yet), but the one linked above
+does.<br/>
 If you want to host the map on the world wide web, you'll need a web server.
 
 ### Running the mapper script
