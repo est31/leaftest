@@ -84,7 +84,7 @@ rm -f ${tiledir}/20/*
 
 jobparam="-P$JOBNUM"
 
-#create tile images
+echo "Creating tile images with minetestmapper…"
 for x in $(seq 0 $tilenum)
 do
 	for y in $(seq 0 $tilenum)
@@ -107,10 +107,12 @@ if [ $xargs_exit -ne 0 ]; then
 	exit 1
 fi
 
-#join the images and make them smaller
+# images are joined together and downscaled
+echo "Generating lower resolution tile images…"
 mult=1
 for s in $(seq 1 $zoomlevelnum)
 do
+	echo "$s/$zoomlevelnum …"
 	mult=$(($mult*2))
 	tnum=$(($tilenum/$mult-1))
 	zoomlevel=$((20-$s))
