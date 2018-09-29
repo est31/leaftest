@@ -16,6 +16,12 @@ if [ ! -f $mapperpath ]; then
 	exit 1
 fi
 
+if [ ! -d "$MAPDIR" ]; then
+	echo "Error, the directory \"$MAPDIR\" doesn't exist."
+	echo "Please specify the path to the minetest world"
+	exit 1
+fi
+
 if [ -f downscaling/perc ]; then
 	echo "Using SSIM based downscaling"
 	downscale() {
