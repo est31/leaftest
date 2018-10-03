@@ -1,3 +1,4 @@
+var tilesdir = 'tiles/';
 var xmlhttp = new XMLHttpRequest();
 xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -5,7 +6,7 @@ xmlhttp.onreadystatechange = function() {
         loadmap(config);
     }
 }
-xmlhttp.open("GET", "conf.json", true);
+xmlhttp.open("GET", tilesdir + "conf.json", true);
 xmlhttp.overrideMimeType("application/json"); //to silence browser warnings when started without a server
 xmlhttp.send();
 
@@ -13,8 +14,9 @@ function loadmap(config) {
 	var mapsize = config.mapsize;
 	var spawn = config.spawn;
 	var zoommin = config.zoommin;
+	var tilesize = config.tilesize;
 	var xb= 0-spawn.x+mapsize/2;
-	var yb= 0-spawn.y-mapsize/2-256;
+	var yb= 0-spawn.y-mapsize/2-tilesize;
 	var bnd = new L.LatLngBounds();
 	bnd.extend(L.latLng([spawn.x-mapsize/2, spawn.y-mapsize/2]));
 	bnd.extend(L.latLng([spawn.x+mapsize/2, spawn.y+mapsize/2]));
@@ -41,10 +43,10 @@ function loadmap(config) {
 		})
 	}).setView([0,0], 22);
 	map.setView([spawn.x,spawn.y]);
-	L.tileLayer('tiles/{z}/map_{x}_{y}.png', {
+	L.tileLayer(tilesdir + '{z}/map_{x}_{y}.png', {
 		maxZoom: 26,
 		maxNativeZoom: 20,
-		tileSize: 256,
+		tileSize: tilesize,
 		continuousWorld: true
 	}).addTo(map);
 	map.on('mousemove click', function(e) {
