@@ -3,12 +3,11 @@
 MAPDIR=$1
 SPAWNPOS=$2
 DIMENSIONS=$3
+DIMENSIONS=${DIMENSIONS=6144}
 
-if [ -z $MAPPERDIR ]; then
-	MAPPERDIR=.
-fi
+MAPPERDIR=${MAPPERDIR=.}
 
-mapperpath=$MAPPERDIR/minetestmapper
+mapperpath=${mapperpath=$MAPPERDIR/minetestmapper}
 
 if [ ! -f $mapperpath ]; then
 	echo "Error, "$mapperpath" doesn't exist."
@@ -35,9 +34,7 @@ else
 	}
 fi
 
-if [ -z "$JOBNUM" ]; then
-	JOBNUM=1
-fi
+JOBNUM=${JOBNUM=1}
 
 case "$JOBNUM" in
 	''|*[!0-9]*) echo "Bad number of jobs '$JOBNUM'. Please specify a positive integer." ; exit 1 ;;
@@ -66,16 +63,20 @@ eval $prefix_func
 #bash -c "$prefix_pipefail ; (echo -e 'a\nb\nc\n' ; false) | prefix 'PREF '" || echo "ERR"
 #exit 1
 
-scriptdir=`readlink -f $0`
-scriptdir=`dirname $scriptdir`
+if [ -z "$scriptdir" ]; then
+    scriptdir=`readlink -f $0`
+    scriptdir=`dirname $scriptdir`
+fi
 
-tiledir=$scriptdir/www/tiles
+tiledir=${tiledir=$scriptdir/www/tiles}
 
 spawnx=${SPAWNPOS%%,*}
+spawnx=${spawnx=0}
 spawny=${SPAWNPOS##*,}
+spawny=${spawny=0}
 #echo "spawn position: $spawnx $spawny"
-tilesize=256
-zoomlevelnum=3
+tilesize=${tilesize=256}
+zoomlevelnum=${zoomlevelnum=3}
 
 tilenum=$(($DIMENSIONS/$tilesize))
 
@@ -121,7 +122,7 @@ do
 	dir=$tiledir/$zoomlevel
 	dirb=$tiledir/$zoomlevelbefore
 	mkdir -p $dir
-	rm -f ${dir}/20/*
+	rm -f ${dir}/*
 	for x in $(seq 0 $tnum)
 	do
 		for y in $(seq 0 $tnum)
@@ -144,4 +145,4 @@ done
 
 zoommin=$((20-$zoomlevelnum))
 #write the resulting config into a json file
-echo "{\"mapsize\":$DIMENSIONS, \"spawn\":{\"x\":$spawnx,\"y\":$spawny}, \"zoommin\":$zoommin}" > $scriptdir/www/conf.json
+echo "{\"mapsize\":$DIMENSIONS, \"spawn\":{\"x\":$spawnx,\"y\":$spawny}, \"zoommin\":$zoommin, \"tilesize\":$tilesize}" > ${conffile=$tiledir/conf.json}
