@@ -47,7 +47,7 @@ environment variable mechanism (as observable above):
 
 * `MAPPERDIR` must point to the path that contains the minetestmapper executable
 * `MAPPERPARAMS` can be used to pass custom parameters to the `minetestmapper` invocation
-* `JOBNUM` can be set to an integer > 1 to run `JOBNUM` many processes in parallel to speed up the mapping process
+* `JOBNUM` can be set to an integer > 1 to run `JOBNUM` many processes in parallel to speed up the mapping process. NOTE: Do not set this above 1 if the world uses the LevelDB backend ([more reading](https://github.com/est31/leaftest/issues/20)).
 
 After mapping has finished, you can open the `www/map.html` file. If you want to publish your results, you can either symlink the `www` directory into your `/var/www` directory, or copy it. Due to usage of relative symlinks, you should use `rsync -L`, so that the copied directory doesn't contain symlinks.
 
